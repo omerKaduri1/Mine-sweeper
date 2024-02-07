@@ -1,0 +1,27 @@
+body {
+    text-align: center;
+    font-family: cursive;
+} 
+
+h1 {
+    font-size: 18px;
+}
+
+table {
+    border: 1px solid black;
+    margin: 20px auto;
+}
+
+.board td {
+    width: 15px;
+    height: 15px;
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+    transition: background-color 0.5s;
+    cursor: pointer;
+}
+
+footer {
+    font-size: 12px;
+}
