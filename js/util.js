@@ -26,18 +26,19 @@ function getRandomColor() {
     return color
 }
 
-function getEmptyPos() {
+function getEmptyPos(board) {
     const emptyPoses = []
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[0].length; j++) {
             const currCell = gBoard[i][j]
-            if (currCell === EMPTY) {
+            if (!currCell.isMine) {
                 emptyPoses.push({ i, j })
             }
         }
     }
 
-    const randIdx = getRandomIntInclusive(0, emptyPoses.length - 1)
+    const randIdx = getRandomInt(0, emptyPoses.length)
+    console.log(randIdx);
     return emptyPoses[randIdx]
 }
 
@@ -68,8 +69,21 @@ function startTimer() {
         const seconds = getFormatSeconds(timeDiff)
         const milliSeconds = getFormatMilliSeconds(timeDiff)
 
-        document.querySelector('span.seconds').innerText =  seconds
+        document.querySelector('span.seconds').innerText = seconds
         document.querySelector('span.milli-seconds').innerText = milliSeconds
 
     }, 10)
 }
+
+// function drawRandIdx() {
+//     const randIdx = getRandomInt(0, gRandIdxs.length)
+//     gRandIdxs.splice(randIdx, 1)
+//     return randIdx
+// }
+
+// function resetNums() {
+//     gRandIdxs = []
+//     for (var i = 1; i <= gLevel.size; i++) {
+//         gRandIdxs.push(i)
+//     }
+// }
