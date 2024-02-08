@@ -36,7 +36,7 @@ table {
 }
 
 .shown {
-    background-color: rgb(105, 100, 100);
+    background-color: rgb(173, 149, 149);
 }
 
 footer {
@@ -86,4 +86,22 @@ footer {
 
 h2 {
     color: white;
+}
+
+.game-info {
+    position: relative;
+}
+
+.shown-count {
+    display: inline;
+    margin-right: 20px;
+}
+
+.timer {
+    display: inline;
+    margin-left: 20px;
+}
+
+.reset-btn {
+
 }
