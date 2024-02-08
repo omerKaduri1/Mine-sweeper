@@ -3,14 +3,14 @@ body {
     text-align: center;
     font-family: cursive;
     background-color: rgb(39, 9, 52);
-} 
+}
 
 h1 {
     font-size: 18px;
 }
 
 table {
-    border: 1px solid black;
+    border: 0.5px solid white;
     margin: 20px auto;
 }
 
@@ -23,17 +23,67 @@ table {
     text-align: center;
     transition: background-color 0.5s;
     cursor: pointer;
+    /* visibility: revert-layer; */
+}
+
+.cell {
+    background-color: rgb(83, 81, 81);
+
+}
+
+.un-shown {
+    visibility: hidden;
+}
+
+.shown {
+    background-color: rgb(105, 100, 100);
 }
 
 footer {
     font-size: 12px;
+    margin-top: 100px;
 }
 
 .lives {
     width: 28px;
+    margin-top: 20px;
+}
+
+.live-1 {
+    visibility: hidden;
+}
+
+.live-2 {
+    visibility: visible;
+}
+
+.live-3 {
+    visibility: hidden;
 }
 
 .bomb {
     width: 18px;
     height: 18px;
+}
+
+.levels button {
+    background-color: rgb(147, 57, 147);
+    color: white;
+    border: none;
+    font-family: cursive;
+    font-size: 12px;
+}
+
+.modal {
+    background-color: rgb(100, 97, 97);
+    color: white;
+    border: 2px solid rgb(183, 105, 183);
+    width: 170px;
+    padding: 15px;
+    margin: 30px auto;
+    display: none;
+}
+
+h2 {
+    color: white;
 }
