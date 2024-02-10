@@ -13,18 +13,20 @@
         <button onclick="setLevels(this)" data-size="8" data-mines="14">Medium</button>
         <button onclick="setLevels(this)" data-size="12" data-mines="32">Expert</button>
     </div>
+    <div class="modes">
+        <button onclick="changeToLight()">Light mode </button>
+        <button onclick="changeToDark()">Dark mode </button>
+    </div>
     <div class="lives-container">
         <img src="img/hearts-life.png" class=" lives live-1"/>
         <img src="img/hearts-life.png" class=" lives live-2"/>
         <img src="img/hearts-life.png" class=" lives live-3"/>
     </div>
-    <div class="game-info">
-        <div class="shown-count">00</div>
-        <button class="reset-btn">🙂</button>
-        <div class="timer">
-            <span>000</span>
-        </div>
+    <div class="timer">Your time: 
+        <span>000</span>
     </div>
+    <div class="shown-count">00</div>
+    <button class="reset-btn" onclick="onCloseModal()">😊</button>
     <table>
         <tbody class="board">
         </tbody>

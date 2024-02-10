@@ -8,6 +8,7 @@ var gBoard
 var gIsFirstClick = true
 var gLivesCount
 var gTimerInterval
+var elSmileyBtn = document.querySelector('.reset-btn')
 
 var gLevel = {
     size: 4,
@@ -22,8 +23,10 @@ var gGame = {
 }
 
 function onInit() {
+    elSmileyBtn.innerText = '😊'
     clearInterval(gTimerInterval)
-    
+    document.querySelector('.timer span').innerText = '000'
+    updateShownCellsCount(-gGame.shownCount)
     gIsFirstClick = true
     gBoard = buildBoard()
     renderBoard(gBoard)
@@ -52,8 +55,6 @@ function buildBoard() {
             board[i][j] = cell
         }
     }
-    // board[0][3].isMine = true
-    // board[1][2].isMine = true
     board = setMinesNegsCount(board)
     return board
 }
@@ -64,17 +65,23 @@ function renderBoard(board) {
         strHTML += '<tr>'
         for (let j = 0; j < board[i].length; j++) {
             var cell = board[i][j]
-            const negsCount = (cell.isMine || !cell.minesAroundCount) ? EMPTY : cell.minesAroundCount
-            var symbol = (cell.isMine) ? MINE : negsCount
-            var isShown = cell.isShown
-            strHTML += `<td class="cell, ${(isShown) ? 'shown':''}" data-i=${i} data-j=${j} onclick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this)">
-            <span class="${(isShown) ? '':'un-shown'}">${symbol}</span></td>`
+            var symbol = getSymbol(cell)
+            var cellClass = (cell.isShown && !cell.isMarked) ? 'shown' : ''
+            var spanClass = (cell.isShown || cell.isMarked) ? '' : 'un-shown'
+            strHTML += `<td class="cell ${cellClass}" data-i=${i} data-j=${j} onclick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, event)">
+            <span class="${spanClass}">${symbol}</span></td>`
         }
         strHTML += '</tr>'
     }
     const elBoard = document.querySelector('tbody.board')
     elBoard.innerHTML = strHTML
-    console.log(strHTML)
+}
+
+function getSymbol(cell) {
+    if (cell.isMarked) return FLAG
+    if (cell.isMine) return MINE
+    if (cell.minesAroundCount) return cell.minesAroundCount
+    else return EMPTY
 }
 
 function setMinesNegsCount(board) {
@@ -101,32 +108,41 @@ function countCellNegs(board, rowIdx, colIdx) {
 }
 
 function onCellClicked(elCell, i, j) {
+    if (!gGame.isOn) return
     const cell = gBoard[i][j]
-    const elSpan = elCell.querySelector('span')
-    gGame.shownCount++
+    if (!cell.isMarked) {
+        cell.isShown = true
 
-    cell.isShown = true
-    // if (cell.isShown) {
-        // elSpan.classList.remove('un-shown')
-        // elCell.classList.add('shown')
-    // }
+        updateShownCellsCount(1)
+        if (gIsFirstClick) {
+            placeRandMines(i, j)
+            gIsFirstClick = false
+            startTimer()
+        }
 
-    if (gIsFirstClick) {
-        // cell.isShown = true
-        console.log('first Click:', elCell)
-        placeRandMines(i, j)
-        gIsFirstClick = false
-        startTimer()
+        if (cell.isMine) {
+            handleStrike()
+        }
+
+        if (!cell.minesAroundCount && !cell.isMine) {
+            expandShown(gBoard, elCell, i, j)
+        }
+
     }
-    
-    if (cell.isMine) {
-        handleStrike()
+
+    else {
+        return
     }
-    
-    if (!cell.minesAroundCount && !cell.isMine) {
-        expandShown(gBoard, elCell, i, j)
+
+    var isVictory = checkGameOver()
+    if (isVictory) {
+        showModal(isVictory)
+        clearInterval(gTimerInterval)
+        elSmileyBtn.innerText = '😎'
+        gGame.isOn = false
+
     }
-    
+    console.log({ gBoard });
     renderBoard(gBoard)
 }
 
@@ -137,12 +153,10 @@ function expandShown(board, elCell, rowIdx, colIdx) {
             if (i === rowIdx && j === colIdx) continue
             if (j < 0 || j >= board[i].length) continue
             const cell = board[i][j]
-            cell.isShown = true
-            gGame.shownCount++
-            const elNegCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
-            const elNegSpan = elNegCell.querySelector('span')
-            elNegSpan.classList.remove('un-shown')
-            elNegCell.classList.add('shown')
+            if (!cell.isShown) {
+                cell.isShown = true
+                updateShownCellsCount(1)
+            }
         }
     }
 }
@@ -153,7 +167,6 @@ function placeRandMines(clickedRow, clickedCol) {
         const randIIdx = getRandomInt(0, gLevel.size)
         const randJIdx = getRandomInt(0, gLevel.size)
         var randCell = gBoard[randIIdx][randJIdx]
-        console.log({ randIIdx, randJIdx })
         if (!randCell.isMine && (randIIdx !== clickedRow || randJIdx !== clickedCol)) {
             randCell.isMine = true
             mineCount++
@@ -163,13 +176,19 @@ function placeRandMines(clickedRow, clickedCol) {
 }
 
 function handleStrike() {
-    if (gLivesCount > 0)
-        gLivesCount--
-    changeLivesDisplay()
-    if (gLivesCount === 0) {
+    gLivesCount--
+    if (gLivesCount > 0) {
+        elSmileyBtn.innerText = '😵'
+        console.log(gLivesCount);
+        setTimeout(() => {
+            elSmileyBtn.innerText = '😊'
+        }, 2000);
+        changeLivesDisplay()
+    } else if (gLivesCount === 0) {
         clearInterval(gTimerInterval)
         showModal()
         gGame.isOn = false
+        elSmileyBtn.innerText = '😵'
     }
 }
 
@@ -185,56 +204,65 @@ function changeLivesDisplay() {
     }
 }
 
-function showModal() {
+function showModal(isVictory) {
     const elModal = document.querySelector('.modal')
     elModal.style.display = 'block'
-    elModal.innerText = 'You lost, try again!'
+    if (isVictory) elModal.innerText = 'You won!🏆'
+    else elModal.innerText = 'Maybe next time...'
 }
 
 function onCloseModal() {
     const elModal = document.querySelector('.modal')
     elModal.style.display = 'none'
+    onInit()
 }
 
 function setLivesCountRender() {
     const elLive1 = document.querySelector('.live-1')
+    const elLive2 = document.querySelector('.live-2')
     const elLive3 = document.querySelector('.live-3')
     if (gLevel.size > 4) {
         elLive1.style.visibility = 'visible'
+        elLive2.style.visibility = 'visible'
         elLive3.style.visibility = 'visible'
     } else {
         elLive1.style.visibility = 'hidden'
+        elLive2.style.visibility = 'visible'
         elLive3.style.visibility = 'hidden'
     }
 }
 
-function onCellMarked(elCell) {
-    elCell.addEventListener('contextmenu', function (e) {
-        e.preventDefault()
+function onCellMarked(elCell, event) {
+    event.preventDefault()
 
-        if (!elCell.isMarked) {
-            elCell.innerHTML = FLAG
-            gGame.markedCount++
-            elCell.isMarked = true
-        } else {
-            elCell.innerHTML = ''
-            gGame.markedCount--
-            elCell.isMarked = false
-        }
+    var cell = gBoard[elCell.dataset.i][elCell.dataset.j]
+    if (!cell.isMarked) {
+        elCell.innerHTML = FLAG
+        gGame.markedCount++
+        cell.isMarked = true
+    } else {
+        cell.isMarked = false
+        elCell.innerHTML = EMPTY
+        gGame.markedCount--
+    }
 
-        console.log(elCell);
-    })
 }
 
 
 function checkGameOver() {
-
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[i].length; j++) {
+            const cell = gBoard[i][j]
+            const isLegitCell = (cell.isMine && cell.isMarked || !cell.isMine && cell.isShown)
+            if (!isLegitCell) return false
+        }
+    }
+    return true
 }
 
-function renderShownCellsCount() {
-    var strHTML = `${gGame.shownCount}`
-    const elShownCountDiv = document.querySelector('.shown-count')
-    elShownCountDiv.innerText += strHTML
+function updateShownCellsCount(diff) {
+    gGame.shownCount += diff
+    document.querySelector('.shown-count').innerText = (gGame.shownCount + '').padStart(2, '0')
 }
 
 function startTimer() {
@@ -252,4 +280,16 @@ function startTimer() {
 function getFormatSeconds(timeDiff) {
     const seconds = Math.floor(timeDiff / 1000)
     return (seconds + '').padStart(3, '0')
+}
+
+function changeToDark(){
+    const elBody = document.querySelector('body')
+    elBody.style.color= 'white'
+    elBody.style.backgroundImage = 'url(/img/dark-bcg.jpg)'
+}
+
+function changeToLight(){
+    const elBody = document.querySelector('body')
+    elBody.style.color= 'black'
+    elBody.style.backgroundImage = 'url(/img/light-bcg.avif)'
 }
