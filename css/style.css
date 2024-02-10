@@ -23,14 +23,12 @@ table {
     border: 1px solid white;
     padding: 5px;
     text-align: center;
-    transition: background-color 0.5s;
     cursor: pointer;
     margin: 4px;
-    /* visibility: revert-layer; */
 }
 
 .cell {
-    background-color: rgb(83, 81, 81);
+    background-color: rgb(87, 84, 84);
 
 }
 
@@ -39,12 +37,12 @@ table {
 }
 
 .shown {
-    background-color: rgb(173, 149, 149);
+    background-color: rgb(151, 136, 136);
 }
 
 footer {
     font-size: 12px;
-    margin-top: 100px;
+    margin-top: 70px;
 }
 
 .lives {
@@ -79,13 +77,18 @@ footer {
 }
 
 .modal {
-    background-color: rgb(100, 97, 97);
+    background-color: rgb(132, 126, 126);
     color: white;
-    border: 2px solid rgb(183, 105, 183);
+    border: 2px solid rgb(147, 57, 147);
     width: 170px;
-    padding: 15px;
-    margin: 30px auto;
+    padding: 13px;
+    margin: 20px auto;
     display: none;
+    border-radius: 4px;
+    position: absolute;
+    left: 50%;
+    margin-left: -85px;
+
 }
 
 h2 {
@@ -102,8 +105,8 @@ h2 {
 }
 
 .timer {
-    display: block;
     margin-bottom: 20px;
+    font-size: 15px;
 }
 
 .reset-btn {
@@ -112,6 +115,7 @@ h2 {
     padding: 3px 5px;
     border-radius: 6px;
     margin: 5px;
+    border: solid 1.5px black;
 }
 
 .modes button {
@@ -120,5 +124,12 @@ h2 {
     border: solid 1.5px black;
     font-family: cursive;
     font-size: 12px;
+    margin: 3px 4px;
+}
+
+.mines-exter {
+    color: white;
+    border: solid 1.5px black;
+    font-family: cursive;
     margin: 3px 4px;
 }

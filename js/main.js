@@ -25,6 +25,7 @@ var gGame = {
 
 function onInit() {
     elSmileyBtn.innerText = '😊'
+    gElBody.style.backgroundImage = 'url(img/light-bcg.avif)'
     clearInterval(gTimerInterval)
     document.querySelector('.timer span').innerText = '000'
     updateShownCellsCount(-gGame.shownCount)
@@ -34,7 +35,6 @@ function onInit() {
     gGame.isOn = true
     gLivesCount = (gLevel.size <= 4) ? 1 : 3
     setLivesCountRender()
-    gElBody.style.backgroundImage = 'url(img/light-bcg.avif)'
 }
 
 function setLevels(elBtn) {
@@ -112,6 +112,7 @@ function countCellNegs(board, rowIdx, colIdx) {
 function onCellClicked(elCell, i, j) {
     if (!gGame.isOn) return
     const cell = gBoard[i][j]
+    if (cell.isShown) return
     if (!cell.isMarked) {
         cell.isShown = true
 
@@ -144,7 +145,6 @@ function onCellClicked(elCell, i, j) {
         gGame.isOn = false
 
     }
-    console.log({ gBoard });
     renderBoard(gBoard)
 }
 
@@ -181,7 +181,6 @@ function handleStrike() {
     gLivesCount--
     if (gLivesCount > 0) {
         elSmileyBtn.innerText = '😵'
-        console.log(gLivesCount);
         setTimeout(() => {
             elSmileyBtn.innerText = '😊'
         }, 2000);
@@ -250,7 +249,6 @@ function onCellMarked(elCell, event) {
 
 }
 
-
 function checkGameOver() {
     for (let i = 0; i < gBoard.length; i++) {
         for (let j = 0; j < gBoard[i].length; j++) {
@@ -284,12 +282,32 @@ function getFormatSeconds(timeDiff) {
     return (seconds + '').padStart(3, '0')
 }
 
-function changeToDark(){
-    gElBody.style.color= 'white'
+function changeToDark() {
+    gElBody.style.color = 'white'
     gElBody.style.backgroundImage = 'url(img/dark-bcg.jpg)'
 }
 
-function changeToLight(){
-    gElBody.style.color= 'black'
+function changeToLight() {
+    gElBody.style.color = 'black'
     gElBody.style.backgroundImage = 'url(img/light-bcg.avif)'
+}
+
+function onExterminatorClick(elBtn) {
+    if (gLevel.size > 4) {
+        elBtn.style.visibility = 'visible'
+    } else {
+        return alert('You cant use this button on beginner level')
+    }
+    var mineCount = 0
+    while (mineCount < 3) {
+        const randIIdx = getRandomInt(0, gLevel.size)
+        const randJIdx = getRandomInt(0, gLevel.size)
+        var randCell = gBoard[randIIdx][randJIdx]
+        if (randCell.isMine && !randCell.isShown) {
+            randCell.isMine = false
+            mineCount++
+        }
+    }
+    setMinesNegsCount(gBoard)
+    renderBoard(gBoard)
 }
