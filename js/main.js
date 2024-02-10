@@ -9,6 +9,7 @@ var gIsFirstClick = true
 var gLivesCount
 var gTimerInterval
 var elSmileyBtn = document.querySelector('.reset-btn')
+var gElBody = document.querySelector('body')
 
 var gLevel = {
     size: 4,
@@ -33,6 +34,7 @@ function onInit() {
     gGame.isOn = true
     gLivesCount = (gLevel.size <= 4) ? 1 : 3
     setLivesCountRender()
+    gElBody.style.backgroundImage = 'url(img/light-bcg.avif)'
 }
 
 function setLevels(elBtn) {
@@ -283,13 +285,11 @@ function getFormatSeconds(timeDiff) {
 }
 
 function changeToDark(){
-    const elBody = document.querySelector('body')
-    elBody.style.color= 'white'
-    elBody.style.backgroundImage = 'url(img/dark-bcg.jpg)'
+    gElBody.style.color= 'white'
+    gElBody.style.backgroundImage = 'url(img/dark-bcg.jpg)'
 }
 
 function changeToLight(){
-    const elBody = document.querySelector('body')
-    elBody.style.color= 'black'
-    elBody.style.backgroundImage = 'url(img/light-bcg.avif)'
+    gElBody.style.color= 'black'
+    gElBody.style.backgroundImage = 'url(img/light-bcg.avif)'
 }
