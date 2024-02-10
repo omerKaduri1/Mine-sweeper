@@ -291,5 +291,5 @@ function changeToDark(){
 function changeToLight(){
     const elBody = document.querySelector('body')
     elBody.style.color= 'black'
-    elBody.style.backgroundImage = 'url("img/light-bcg.avif")'
+    elBody.style.backgroundImage = 'url(img/light-bcg.avif)'
 }
