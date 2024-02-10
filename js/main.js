@@ -285,7 +285,7 @@ function getFormatSeconds(timeDiff) {
 function changeToDark(){
     const elBody = document.querySelector('body')
     elBody.style.color= 'white'
-    elBody.style.backgroundImage = 'url(/img/dark-bcg.jpg)'
+    elBody.style.backgroundImage = 'url(img/dark-bcg.jpg)'
 }
 
 function changeToLight(){
