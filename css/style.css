@@ -2,7 +2,7 @@ body {
     color: black;
     text-align: center;
     font-family: cursive;
-    background-image: url(img/light-bcg.avif);
+    background-image: url("img/light-bcg.avif");
     background-repeat: no-repeat;
     background-size: cover
 }
